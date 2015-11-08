@@ -33,17 +33,8 @@ app.get('/items', function(req, res) {
     res.json(storage.items);
 });
 
-app.post('/items', jsonParser, function(req, res) {
-    if (!req.body) {
-        return res.sendStatus(400);
-    }
-    
-    var item = storage.add(req.body.name);
-    res.status(201).json(item);
-    console.log('new item added: ' + req.body.name);
-});
-
 app.delete('/items/:id', jsonParser, function(req, res) {
+    console.log('at least we got this far');
     var id = req.params.id;
     if (!req.body) {
         return res.sendStatus(400);
@@ -52,11 +43,13 @@ app.delete('/items/:id', jsonParser, function(req, res) {
     // return 404
     function findId(id) {
         var result = storage.items.filter(function(obj){
-        return obj.id === id;
+            return obj.id === id;
         });
+        console.log('findId result: ' + result);
         return result;
     }
-    if (findId(id).length === 0) {
+    if (findId(id).length !== 0) {
+        console.log('hi this is log msg from 2nd if statement');
         return res.sendStatus(404);
     }
     
@@ -64,6 +57,16 @@ app.delete('/items/:id', jsonParser, function(req, res) {
     res.status(201).json(item);
     console.log('item id:' + id + ' removed!');
     
+});
+
+app.post('/items', jsonParser, function(req, res) {
+    if (!req.body) {
+        return res.sendStatus(400);
+    }
+    
+    var item = storage.add(req.body.name);
+    res.status(201).json(item);
+    console.log('new item added: ' + req.body.name);
 });
 
 
