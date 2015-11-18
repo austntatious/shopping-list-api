@@ -68,3 +68,7 @@ app.post('/items', jsonParser, function(req, res) {
 app.listen(process.env.PORT || 8080, function() {
     console.log('Server is running at port 8080!');
 });
+
+
+exports.app = app;
+exports.storage = storage;
