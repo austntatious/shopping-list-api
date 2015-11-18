@@ -15,11 +15,18 @@ Storage.prototype.add = function(name) {
 };
 
 Storage.prototype.removeById = function(id) {
-    //find id and delete from looping thru this.items array and delete obj
-    var index = this.items.indexOf(this.id = id);
-    var item = this.items.splice(index, 1);
-    return item;
-};  // DOES THIS WORK?!?!?!??!
+    var removedItem;
+    this.items = this.items.filter(function(item) {
+        if (item.id === id) {
+            console.log('aca');
+            removedItem = item;
+        }
+
+        return item.id !== id;
+    });
+
+    return removedItem;  
+};
 
 var storage = new Storage();
 storage.add('Broad beans');
@@ -34,29 +41,17 @@ app.get('/items', function(req, res) {
 });
 
 app.delete('/items/:id', jsonParser, function(req, res) {
-    console.log('at least we got this far');
     var id = req.params.id;
     if (!req.body) {
         return res.sendStatus(400);
     }
-    // search items array in storage object for id, if doesnt exist
-    // return 404
-    function findId(id) {
-        var result = storage.items.filter(function(obj){
-            return obj.id === id;
-        });
-        console.log('findId result: ' + result);
-        return result;
-    }
-    if (findId(id).length !== 0) {
-        console.log('hi this is log msg from 2nd if statement');
+
+    var removedItem = storage.removeById(parseInt(id));
+    if (!removedItem) {
         return res.sendStatus(404);
     }
     
-    var item = storage.removeById(id);
-    res.status(201).json(item);
-    console.log('item id:' + id + ' removed!');
-    
+    res.status(200).json(removedItem);
 });
 
 app.post('/items', jsonParser, function(req, res) {
