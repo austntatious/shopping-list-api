@@ -34,12 +34,14 @@ Storage.prototype.editById = function(id, name) {
         if (item.id === id) {
             console.log('found ID to edit');
             editedItem = item;
+            console.log('edited item: ' + editedItem);
             editedItem.name = name;
+            console.log('edited item name: ' + editedItem.name);
         }
         
         return item.id !== id;
     });
-
+    this.items.push(editedItem.name);
     return editedItem;
 };
 
@@ -50,6 +52,8 @@ storage.add('Peppers');
 
 var app = express();
 app.use(express.static('public'));
+
+
 
 app.get('/items', function(req, res) {
     res.json(storage.items);
@@ -90,7 +94,7 @@ app.put('/items/:id', jsonParser, function(req, res) {
     }
     
     res.status(200).json(editedItem);
-    console.log('id:' + id + 'edited!');
+    console.log('id: ' + id + ' edited!');
     
 });
 
